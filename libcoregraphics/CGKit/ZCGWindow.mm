@@ -12,7 +12,7 @@
 #import "ZCGWindow.h"
 #import "ZCGWindowDelegate.h"
 
-#import "ZCGKeyEvent.h"
+#import "ZCGView.h"
 
 @interface ZCGWindow ()
 @property (nonatomic, strong) ZCGWindowDelegate *delegate;
@@ -38,9 +38,8 @@
 
         [_nsWindow makeKeyAndOrderFront:nil];
 
-        // OpenGL setup
-        NSOpenGLContext *glContext = [[NSOpenGLContext alloc]
-            initWithFormat:[NSOpenGLView defaultPixelFormat] shareContext:nil];
+        // OpenGL setup, deprecated
+       
         [glContext makeCurrentContext];
     }
     return self;

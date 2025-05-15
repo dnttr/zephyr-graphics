@@ -10,13 +10,23 @@
 
 #import "internal/core_graphics.h"
 
-#import "ZCGKeyEvent.h"
+#import "ZCGView.h"
 
-@interface ZCGKeyEvent ()
+@interface ZCGView ()
 @property (nonatomic, copy) void (^keyPressCallback)(unsigned short);
 @end
 
-@implementation ZCGKeyEvent
+@implementation ZCGView
+
+- (void)prepareOpenGL {
+    [super prepareOpenGL];
+}
+
+- (void)reshape {
+    [super reshape];
+}
+
+
 
 - (BOOL)acceptsFirstResponder {
     return YES;
