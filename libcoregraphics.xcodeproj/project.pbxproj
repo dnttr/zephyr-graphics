@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2D7891662DD666AD00FBA173 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D7891652DD666AD00FBA173 /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		2D78913A2DD5487000FBA173 /* liblibcoregraphics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibcoregraphics.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D78913A2DD5487000FBA173 /* libcoregraphics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcoregraphics.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D7891652DD666AD00FBA173 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2D7891662DD666AD00FBA173 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -33,6 +39,7 @@
 			isa = PBXGroup;
 			children = (
 				2D78913C2DD5487000FBA173 /* libcoregraphics */,
+				2D7891642DD666AD00FBA173 /* Frameworks */,
 				2D78913B2DD5487000FBA173 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,9 +47,17 @@
 		2D78913B2DD5487000FBA173 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2D78913A2DD5487000FBA173 /* liblibcoregraphics.a */,
+				2D78913A2DD5487000FBA173 /* libcoregraphics.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2D7891642DD666AD00FBA173 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2D7891652DD666AD00FBA173 /* Cocoa.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,7 +92,7 @@
 			packageProductDependencies = (
 			);
 			productName = libcoregraphics;
-			productReference = 2D78913A2DD5487000FBA173 /* liblibcoregraphics.a */;
+			productReference = 2D78913A2DD5487000FBA173 /* libcoregraphics.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -177,7 +192,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -232,7 +247,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -245,7 +260,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YAU6TFMD93;
 				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = coregraphics;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -256,7 +271,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YAU6TFMD93;
 				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = coregraphics;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
