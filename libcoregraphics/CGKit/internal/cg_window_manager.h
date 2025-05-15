@@ -1,5 +1,5 @@
 //
-//  libcoregraphics.h
+//  cg_window_manager.h
 //  libcoregraphics
 //
 //  Created by Damian Netter on 14/05/2025.

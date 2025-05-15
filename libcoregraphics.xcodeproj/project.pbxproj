@@ -260,6 +260,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YAU6TFMD93;
 				EXECUTABLE_PREFIX = lib;
+				OTHER_CFLAGS = "-Wno-deprecated-declarations";
 				PRODUCT_NAME = coregraphics;
 				SKIP_INSTALL = YES;
 			};
@@ -271,6 +272,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = YAU6TFMD93;
 				EXECUTABLE_PREFIX = lib;
+				OTHER_CFLAGS = "-Wno-deprecated-declarations";
 				PRODUCT_NAME = coregraphics;
 				SKIP_INSTALL = YES;
 			};

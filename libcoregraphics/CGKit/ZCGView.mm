@@ -1,5 +1,5 @@
 //
-//  key_handler.m
+//  ZCGView.m
 //  libcoregraphics
 //
 //  Created by Damian Netter on 15/05/2025.
@@ -8,38 +8,62 @@
 #import <Foundation/Foundation.h>
 #import "AppKit/AppKit.h"
 
-#import "internal/core_graphics.h"
+#import "internal/cg_window_manager.h"
 
 #import "ZCGView.h"
-
-@interface ZCGView ()
-@property (nonatomic, copy) void (^keyPressCallback)(unsigned short);
-@end
 
 @implementation ZCGView
 
 - (void)prepareOpenGL {
     [super prepareOpenGL];
+    [[self openGLContext] makeCurrentContext];
+    
+    //INVOKE C++ SIDE
+    
+    GLint sync = 1;
+    [[self openGLContext] setValues:&sync forParameter:NSOpenGLCPSwapInterval];
 }
 
 - (void)reshape {
     [super reshape];
+    
+// INVOKE C++ SIDE
 }
 
-
-
-- (BOOL)acceptsFirstResponder {
-    return YES;
+- (void)drawRect:(NSRect)dirtyRect {
+    [[self openGLContext] makeCurrentContext];
+    
+    NSRect rect = [self convertRectToBacking:self.bounds];
+    
+    //INVOKE C++ SIDE
+    
+    [[self openGLContext] flushBuffer];
 }
 
-- (void)keyDown:(NSEvent *)event {
-    if (self.keyPressCallback) {
-        self.keyPressCallback(event.keyCode);
+- (instancetype)initWithFrame:(NSRect)frameRect {
+    NSOpenGLPixelFormatAttribute attrs[] =
+       {
+           NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersion3_2Core,
+           NSOpenGLPFAColorSize, 24,
+           NSOpenGLPFADepthSize, 16,
+           NSOpenGLPFADoubleBuffer,
+           NSOpenGLPFAAccelerated,
+           0
+       };
+    
+    NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
+    
+    self = [super initWithFrame:frameRect pixelFormat:pixelFormat];
+    
+    if (self) {
+        [[self openGLContext] makeCurrentContext];
     }
+    
+    return self;
 }
 
-- (void)setOnKeyPress:(void (^)(unsigned short))callback {
-    self.keyPressCallback = callback;
+- (void)runLoopOnce {
+    [self setNeedsDisplay:true];
 }
 
 @end

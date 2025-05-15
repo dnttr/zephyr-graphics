@@ -1,5 +1,5 @@
 //
-//  CGWindow.h
+//  ZCGWindow.h
 //  libcoregraphics
 //
 //  Created by Damian Netter on 15/05/2025.
@@ -7,20 +7,28 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef void (^ZCGWindowCloseCallback)(void);
-typedef void (^ZCGKeyPressCallback)(unsigned short keyCode);
+#import "internal/cg_window_manager.h"
+
+#import "ZCGView.h"
 
 @interface ZCGWindow : NSObject
 
 @property (nonatomic, strong, readonly) NSWindow *nsWindow;
 
-- (instancetype) initWithTitle:(NSString *)title
-                             x:(int)x
-                             y:(int)y
-                         width:(int)width
-                        height:(int)height;
+@property (nonatomic, strong) NSWindow *window;
+@property (nonatomic, strong) ZCGView *glView;
+@property (nonatomic, assign) BOOL isRunning;
+@property (nonatomic, copy) void (^onExitCallback)(void);
 
-- (void)setOnClose:(ZCGWindowCloseCallback)callback;
-- (void)setOnKeyPress:(ZCGKeyPressCallback)callback;
+- (instancetype)initWithTitle:(const char *)title
+                            x:(int)x
+                            y:(int)y
+                        width:(int)width
+                       height:(int)height
+               callbackHandle:(zcg_callback_handle *)handle;
+
+- (void)runLoopOnce;
+- (void)resizeToWidth:(int)width height:(int)height;
+- (void)closeWindow;
 
 @end

@@ -1,5 +1,5 @@
 //
-//  libcoregraphics.m
+//  ZCGWindow.mm
 //  libcoregraphics
 //
 //  Created by Damian Netter on 14/05/2025.
@@ -7,53 +7,79 @@
 
 #import "OpenGL/OpenGL.h"
 
-#import "internal/core_graphics.h"
+#import "internal/cg_window_manager.h"
 
-#import "ZCGWindow.h"
 #import "ZCGWindowDelegate.h"
-
-#import "ZCGView.h"
-
-@interface ZCGWindow ()
-@property (nonatomic, strong) ZCGWindowDelegate *delegate;
-@end
+#import "ZCGWindow.h"
 
 @implementation ZCGWindow
 
-- (instancetype)initWithTitle:(NSString *)title x:(int)x y:(int)y width:(int)width height:(int)height {
-    if (self = [super init]) {
+- (instancetype)initWithTitle:(const char *)title
+                            x:(int)x
+                            y:(int)y
+                        width:(int)width
+                       height:(int)height
+               callbackHandle:(zcg_callback_handle *)handle
+{
+    self = [super init];
+    if (self) {
+        [NSApplication sharedApplication];
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+
         NSRect frame = NSMakeRect(x, y, width, height);
-        _nsWindow = [[NSWindow alloc] initWithContentRect:frame
-                                                 styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable)
-                                                   backing:NSBackingStoreBuffered
-                                                     defer:NO];
-        [_nsWindow setTitle:title];
+        _window = [[NSWindow alloc] initWithContentRect:frame
+                                              styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable)
+                                                backing:NSBackingStoreBuffered
+                                                  defer:NO];
+        NSString *titleStr = [NSString stringWithUTF8String:title];
+        [_window setTitle:titleStr];
 
-        ZCGKeyEvent *view = [[ZCGKeyEvent alloc] initWithFrame:frame];
-        [_nsWindow setContentView:view];
-        [_nsWindow setInitialFirstResponder:view];
+        _glView = [[ZCGView alloc] initWithFrame:frame];
+        [_window setContentView:_glView];
 
-        _delegate = [[ZCGWindowDelegate alloc] init];
-        [_nsWindow setDelegate:_delegate];
+        _window.delegate = self;
+        _isRunning = YES;
 
-        [_nsWindow makeKeyAndOrderFront:nil];
+        if (handle && handle->on_exit_callback) {
+            _onExitCallback = ^{
+                handle->on_exit_callback();
+            };
+        }
 
-        // OpenGL setup, deprecated
-       
-        [glContext makeCurrentContext];
+        [_window makeKeyAndOrderFront:nil];
+        [NSApp activateIgnoringOtherApps:YES];
     }
     return self;
 }
 
-- (void)setOnClose:(ZCGWindowCloseCallback)callback {
-    self.delegate.onClose = callback;
+- (void)windowWillClose:(NSNotification *)notification {
+    _isRunning = NO;
+    if (_onExitCallback) {
+        _onExitCallback();
+    }
 }
 
-- (void)setOnKeyPress:(ZCGKeyPressCallback)callback {
-    NSView *view = self.nsWindow.contentView;
-    if ([view isKindOfClass:[ZCGKeyEvent class]]) {
-        [(ZCGKeyEvent *)view setOnKeyPress:callback];
+- (void)runLoopOnce {
+    NSEvent *event;
+    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                       untilDate:[NSDate distantPast]
+                                          inMode:NSDefaultRunLoopMode
+                                         dequeue:YES])) {
+        [NSApp sendEvent:event];
     }
+
+    [_glView runLoopOnce];
+}
+
+- (void)resizeToWidth:(int)width height:(int)height {
+    NSRect frame = NSMakeRect(NSMinX(_window.frame), NSMinY(_window.frame), width, height);
+    [_window setContentSize:NSMakeSize(width, height)];
+    [_glView setFrame:frame];
+}
+
+- (void)closeWindow {
+    [_window close];
+    _isRunning = NO;
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-//  CGWindowDelegate.h
+//  ZCGWindowDelegate.h
 //  libcoregraphics
 //
 //  Created by Damian Netter on 15/05/2025.
