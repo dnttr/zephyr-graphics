@@ -1,5 +1,5 @@
 //
-//  WindowDelegate.m
+//  ZCGWindowDelegate.m
 //  libcoregraphics
 //
 //  Created by Damian Netter on 15/05/2025.
