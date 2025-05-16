@@ -16,7 +16,4 @@
 @property (nonatomic, copy) void (^onExitCallback)(void);
 @property (nonatomic, copy) void (^onLoopCallback)(void);
 
-- (void)runLoopOnce;
-
-
 @end

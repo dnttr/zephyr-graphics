@@ -13,14 +13,14 @@ static ZCGWindow *globalWindow = nil;
 
 static void cg_exit(void) {
     if (globalWindow) {
-        [globalWindow closeWindow];
+        [globalWindow close];
         globalWindow = nil;
     }
 }
 
 static void cg_resize(int width, int height) {
     if (globalWindow) {
-        [globalWindow resizeToWidth:width height:height];
+        [globalWindow resize:width height:height];
     }
 }
 

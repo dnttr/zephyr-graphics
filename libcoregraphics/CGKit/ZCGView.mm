@@ -92,8 +92,4 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
     CVDisplayLinkRelease(displayLink);
 }
 
-- (void)runLoopOnce {
-    [self setNeedsDisplay:true];
-}
-
 @end

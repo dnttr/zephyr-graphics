@@ -29,8 +29,7 @@
                        height:(int)height
                callbackHandle:(zcg_callback_handle *)handle;
 
-- (void)runLoopOnce;
-- (void)resizeToWidth:(int)width height:(int)height;
-- (void)closeWindow;
+- (void)resize:(int)width height:(int)height;
+- (void)close;
 
 @end

@@ -64,32 +64,20 @@
     return self;
 }
 
-- (void)windowWillClose:(NSNotification *)notification {
+- (void)isGoingToClose:(NSNotification *)notification {
     _isRunning = NO;
     if (_onExitCallback) {
         _onExitCallback();
     }
 }
 
-- (void)runLoopOnce {
-    NSEvent *event;
-    while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny
-                                       untilDate:[NSDate distantPast]
-                                          inMode:NSDefaultRunLoopMode
-                                         dequeue:YES])) {
-        [NSApp sendEvent:event];
-    }
-
-    [_glView runLoopOnce];
-}
-
-- (void)resizeToWidth:(int)width height:(int)height {
+- (void)resize:(int)width height:(int)height {
     NSRect frame = NSMakeRect(NSMinX(_window.frame), NSMinY(_window.frame), width, height);
     [_window setContentSize:NSMakeSize(width, height)];
     [_glView setFrame:frame];
 }
 
-- (void)closeWindow {
+- (void)close {
     [_window close];
     _isRunning = NO;
 }
