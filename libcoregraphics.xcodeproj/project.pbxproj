@@ -15,6 +15,7 @@
 		2D78913A2DD5487000FBA173 /* libcoregraphics.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcoregraphics.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D7891652DD666AD00FBA173 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		2D7891DF2DD7ED8400FBA173 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2D7891F72DD8039D00FBA173 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -41,6 +42,7 @@
 		2D7891312DD5487000FBA173 = {
 			isa = PBXGroup;
 			children = (
+				2D7891F72DD8039D00FBA173 /* README.md */,
 				2D78913C2DD5487000FBA173 /* libcoregraphics */,
 				2D7891642DD666AD00FBA173 /* Frameworks */,
 				2D78913B2DD5487000FBA173 /* Products */,
