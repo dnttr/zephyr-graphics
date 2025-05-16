@@ -31,13 +31,13 @@ extern "C" {
         void (*resize)(int width, int height);
 
         void (*initialize)(cg_renderer, int width, int height);
-        
-        bool (*loop)(void);
     } zcg_window_t;
 
     typedef struct
     {
         void (*on_exit_callback)(void);
+        
+        void (*on_loop_callback)(void);
     } zcg_callback_handle;
     
     zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle);

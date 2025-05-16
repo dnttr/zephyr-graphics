@@ -40,14 +40,26 @@
         _window.delegate = self;
         _isRunning = YES;
 
-        if (handle && handle->on_exit_callback) {
-            _onExitCallback = ^{
-                handle->on_exit_callback();
-            };
+        if (handle) {
+            if (handle->on_exit_callback) {
+                _onExitCallback = ^{
+                    handle->on_exit_callback();
+                };
+            }
+            if (handle->on_loop_callback) {
+                _onLoopCallback = ^{
+                    handle->on_loop_callback();
+                };
+            }
         }
-
+        
+        if (_onLoopCallback) {
+            self.glView.onLoopCallback = _onLoopCallback;
+        }
+        
         [_window makeKeyAndOrderFront:nil];
         [NSApp activateIgnoringOtherApps:YES];
+        [NSApp run];
     }
     return self;
 }

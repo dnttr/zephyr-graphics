@@ -19,6 +19,8 @@
 @property (nonatomic, strong) ZCGView *glView;
 @property (nonatomic, assign) BOOL isRunning;
 @property (nonatomic, copy) void (^onExitCallback)(void);
+@property (nonatomic, copy) void (^onLoopCallback)(void);
+
 
 - (instancetype)initWithTitle:(const char *)title
                             x:(int)x

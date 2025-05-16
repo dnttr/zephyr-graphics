@@ -5,7 +5,7 @@
 //  Created by Damian Netter on 15/05/2025.
 //
 
-#import "cg_interface.h.h"
+#import "cg_window_manager.h"
 
 #import "ZCGWindow.h"
 
@@ -24,14 +24,6 @@ static void cg_resize(int width, int height) {
     }
 }
 
-static bool cg_loop(void) {
-    if (!globalWindow) return false;
-    if (!globalWindow.isRunning) return false;
-
-    [globalWindow runLoopOnce];
-    return globalWindow.isRunning;
-}
-
 zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle) {
     if (globalWindow) {
         return NULL; // Only one window for now
@@ -42,13 +34,12 @@ zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle) 
                                                 y:args->y
                                             width:args->width
                                            height:args->height
-                                   callbackHandle:handle];
+                                     callbackHandle:handle];
     if (!globalWindow) return NULL;
 
     static zcg_window_t windowApi;
     windowApi.exit = cg_exit;
     windowApi.resize = cg_resize;
-    windowApi.loop = cg_loop;
-
+    
     return &windowApi;
 }
