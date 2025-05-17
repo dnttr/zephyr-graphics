@@ -25,7 +25,7 @@
     if (self) {
         [NSApplication sharedApplication];
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-
+        
         NSRect frame = NSMakeRect(x, y, width, height);
         _window = [[NSWindow alloc] initWithContentRect:frame
                                               styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable)
@@ -33,18 +33,13 @@
                                                   defer:NO];
         NSString *titleStr = [NSString stringWithUTF8String:title];
         [_window setTitle:titleStr];
-
+        
         _glView = [[ZCGView alloc] initWithFrame:frame];
         [_window setContentView:_glView];
-
+        
         ZCGWindowDelegate *delegate = [[ZCGWindowDelegate alloc] init];
         
         if (handle) {
-            if (handle->on_exit_callback) {
-                _onExitCallback = ^{
-                    handle->on_exit_callback();
-                };
-            }
             if (handle->on_loop_callback) {
                 self.glView.onLoopCallback = ^{
                     handle->on_loop_callback();
@@ -57,7 +52,14 @@
             }
         }
         
-        delegate.onClose = _onExitCallback;
+        [[NSNotificationCenter defaultCenter] addObserverForName:NSApplicationWillTerminateNotification
+                                                          object:nil
+                                                           queue:nil
+                                                      usingBlock:^(NSNotification * _Nonnull note) {
+            
+            handle->on_exit_callback();
+
+        }];
         
         _window.delegate = delegate;
         _isRunning = YES;
@@ -68,22 +70,16 @@
     return self;
 }
 
-- (void)isGoingToClose:(NSNotification *)notification {
-    _isRunning = NO;
-    if (_onExitCallback) {
-        _onExitCallback();
-    }
-}
-
 - (void)resize:(int)width height:(int)height {
     NSRect frame = NSMakeRect(NSMinX(_window.frame), NSMinY(_window.frame), width, height);
     [_window setContentSize:NSMakeSize(width, height)];
     [_glView setFrame:frame];
 }
 
-- (void)close {
-    [[NSApplication sharedApplication] terminate:nil];
-    _isRunning = NO;
+- (bool)isRetina {
+    NSScreen *screen = [_window screen];
+    CGFloat scale = screen.backingScaleFactor;
+    return scale > 1.0;
 }
 
 @end

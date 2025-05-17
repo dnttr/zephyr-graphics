@@ -11,20 +11,28 @@
 
 static ZCGWindow *globalWindow = nil;
 
-static void cg_exit(void) {
+static void zcg_exit(void) {
     if (globalWindow) {
-        [globalWindow close];
+        //[globalWindow close];
         globalWindow = nil;
     }
 }
 
-static void cg_resize(int width, int height) {
+static void zcg_resize(int width, int height) {
     if (globalWindow) {
         [globalWindow resize:width height:height];
     }
 }
 
-zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle) {
+static bool zcg_is_retina(void) {
+    if (globalWindow) {
+        return [globalWindow isRetina];
+    }
+    
+    return false;
+}
+
+zcg_window_t *zcg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle) {
     if (globalWindow) {
         return NULL; // Only one window for now
     }
@@ -39,12 +47,13 @@ zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle) 
     if (!globalWindow) return NULL;
 
     static zcg_window_t windowApi;
-    windowApi.exit = cg_exit;
-    windowApi.resize = cg_resize;
-    
+    windowApi.exit = zcg_exit;
+    windowApi.resize = zcg_resize;
+    windowApi.is_retina = &zcg_is_retina;
+
     return &windowApi;
 }
 
-void cg_run(zcg_window_t *window) {
+void zcg_run(const zcg_window_t *window) {
     [NSApp run];
 }

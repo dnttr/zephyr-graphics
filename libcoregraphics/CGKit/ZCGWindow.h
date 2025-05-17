@@ -18,7 +18,6 @@
 @property (nonatomic, strong) NSWindow *window;
 @property (nonatomic, strong) ZCGView *glView;
 @property (nonatomic, assign) BOOL isRunning;
-@property (nonatomic, copy) void (^onExitCallback)(void);
 
 
 - (instancetype)initWithTitle:(const char *)title
@@ -28,7 +27,7 @@
                        height:(int)height
                callbackHandle:(zcg_callback_handle *)handle;
 
+- (bool)isRetina;
 - (void)resize:(int)width height:(int)height;
-- (void)close;
 
 @end

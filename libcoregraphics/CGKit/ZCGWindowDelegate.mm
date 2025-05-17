@@ -1,8 +1,8 @@
 //
-//  ZCGWindowDelegate.m
+//  ZCGWindowDelegate.mm
 //  libcoregraphics
 //
-//  Created by Damian Netter on 15/05/2025.
+//  Created by Damian Netter on 17/05/2025.
 //
 
 #import <Foundation/Foundation.h>
@@ -10,11 +10,9 @@
 
 @implementation ZCGWindowDelegate
 
-- (void) windowWillClose:(NSNotification *)notification {
-    if (self.onClose) {
-        self.onClose();
-    }
+- (BOOL)windowShouldClose:(NSWindow *)sender {
+    [NSApp terminate:nil];
+    return NO;
 }
 
 @end
-
