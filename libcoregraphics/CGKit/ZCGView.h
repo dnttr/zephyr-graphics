@@ -15,5 +15,6 @@
 
 @property (nonatomic, copy) void (^onExitCallback)(void);
 @property (nonatomic, copy) void (^onLoopCallback)(void);
+@property (nonatomic, copy) void (^onReshapeCallback)(int width, int height);
 
 @end

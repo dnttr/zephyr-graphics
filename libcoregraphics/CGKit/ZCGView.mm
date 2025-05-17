@@ -15,6 +15,9 @@
 
 @implementation ZCGView
 
+int backingWidth = 0;
+int backingHeight = 0;
+
 static CVReturn callback(CVDisplayLinkRef displayLink,
                          const CVTimeStamp *inNow,
                          const CVTimeStamp *inOutputTime,
@@ -39,7 +42,15 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
 
 - (void)reshape {
     [super reshape];
-
+    
+    NSRect bounds = [self convertRectToBacking:[self bounds]];
+    backingWidth = (int)bounds.size.width;
+    backingHeight = (int)bounds.size.height;
+    
+    if (self->_onReshapeCallback) {
+        self->_onReshapeCallback(backingWidth, backingHeight);
+    }
+    
     [[self openGLContext] update];
 }
 

@@ -10,7 +10,7 @@
 
 @implementation ZCGWindowDelegate
 
-- (void) windowWillClose:(NSNotification *)notification {    
+- (void) windowWillClose:(NSNotification *)notification {
     if (self.onClose) {
         self.onClose();
     }

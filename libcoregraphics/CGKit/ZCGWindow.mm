@@ -39,9 +39,6 @@
 
         ZCGWindowDelegate *delegate = [[ZCGWindowDelegate alloc] init];
         
-        _window.delegate = delegate;
-        _isRunning = YES;
-
         if (handle) {
             if (handle->on_exit_callback) {
                 _onExitCallback = ^{
@@ -49,18 +46,22 @@
                 };
             }
             if (handle->on_loop_callback) {
-                _onLoopCallback = ^{
+                self.glView.onLoopCallback = ^{
                     handle->on_loop_callback();
+                };
+            }
+            if (handle->on_reshape_callback) {
+                self.glView.onReshapeCallback = ^(int width, int height){
+                    handle->on_reshape_callback(width, height);
                 };
             }
         }
         
-        if (_onLoopCallback) {
-            self.glView.onLoopCallback = _onLoopCallback;
-        }
+        delegate.onClose = _onExitCallback;
         
-        NSLog(@"X");
-        
+        _window.delegate = delegate;
+        _isRunning = YES;
+                
         [_window makeKeyAndOrderFront:nil];
         [NSApp activateIgnoringOtherApps:YES];
     }

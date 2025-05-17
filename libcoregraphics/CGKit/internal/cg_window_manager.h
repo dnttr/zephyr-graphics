@@ -38,11 +38,13 @@ extern "C" {
         void (*on_exit_callback)(void);
         
         void (*on_loop_callback)(void);
+
+        void (*on_reshape_callback)(int width, int height);
     } zcg_callback_handle;
     
     zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle);
 
-    void cg_run(zcg_window_t *window);
+    void cg_run(const zcg_window_t *window);
 
 #ifdef __cplusplus
 } // extern "C"
