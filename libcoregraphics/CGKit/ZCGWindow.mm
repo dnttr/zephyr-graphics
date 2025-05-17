@@ -37,7 +37,9 @@
         _glView = [[ZCGView alloc] initWithFrame:frame];
         [_window setContentView:_glView];
 
-        _window.delegate = self;
+        ZCGWindowDelegate *delegate = [[ZCGWindowDelegate alloc] init];
+        
+        _window.delegate = delegate;
         _isRunning = YES;
 
         if (handle) {
