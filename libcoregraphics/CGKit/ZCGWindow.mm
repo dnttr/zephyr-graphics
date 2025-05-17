@@ -59,9 +59,10 @@
             self.glView.onLoopCallback = _onLoopCallback;
         }
         
+        NSLog(@"X");
+        
         [_window makeKeyAndOrderFront:nil];
         [NSApp activateIgnoringOtherApps:YES];
-        [NSApp run];
     }
     return self;
 }
@@ -80,7 +81,7 @@
 }
 
 - (void)close {
-    [_window close];
+    [[NSApplication sharedApplication] terminate:nil];
     _isRunning = NO;
 }
 

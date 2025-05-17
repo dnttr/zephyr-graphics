@@ -35,6 +35,7 @@ zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle) 
                                             width:args->width
                                            height:args->height
                                      callbackHandle:handle];
+    
     if (!globalWindow) return NULL;
 
     static zcg_window_t windowApi;
@@ -42,4 +43,8 @@ zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle) 
     windowApi.resize = cg_resize;
     
     return &windowApi;
+}
+
+void cg_run(zcg_window_t *window) {
+    [NSApp run];
 }

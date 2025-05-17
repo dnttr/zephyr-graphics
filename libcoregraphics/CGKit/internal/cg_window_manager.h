@@ -42,6 +42,7 @@ extern "C" {
     
     zcg_window_t *cg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle);
 
+    void cg_run(zcg_window_t *window);
 
 #ifdef __cplusplus
 } // extern "C"
