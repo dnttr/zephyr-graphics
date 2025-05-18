@@ -33,9 +33,13 @@ extern "C" {
     {
         void (*on_exit_callback)(void);
         
-        void (*on_loop_callback)(void);
+        void (*on_render_callback)(void);
 
         void (*on_reshape_callback)(int width, int height);
+        
+        void (*on_init_callback)(void);
+        
+        void (*on_update_callback)(void);
     } zcg_callback_handle;
 
     zcg_window_t *zcg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle);

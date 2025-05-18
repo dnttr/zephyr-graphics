@@ -26,7 +26,14 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
                          void *displayLinkContext) {
     @autoreleasepool {
         ZCGView *view = (__bridge ZCGView *)displayLinkContext;
-        [view draw];
+        
+        if (view->_onUpdateCallback) {
+            view->_onUpdateCallback();
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [view draw];
+        });
     }
     
     return kCVReturnSuccess;
@@ -35,9 +42,13 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
 - (void)prepareOpenGL {
     [super prepareOpenGL];
     [[self openGLContext] makeCurrentContext];
-        
+    
     GLint sync = 1;
     [[self openGLContext] setValues:&sync forParameter:NSOpenGLCPSwapInterval];
+    
+    if (self->_onInitCallback) {
+        self->_onInitCallback();
+    }
 }
 
 - (void)reshape {
@@ -77,15 +88,13 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
 }
 
 - (void) draw {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[self openGLContext] makeCurrentContext];
-            
-        if (self->_onLoopCallback) {
-            self->_onLoopCallback();
-        }
+    [[self openGLContext] makeCurrentContext];
         
-        [[self openGLContext] flushBuffer];
-    });
+    if (self->_onRenderCallback) {
+        self->_onRenderCallback();
+    }
+    
+    [[self openGLContext] flushBuffer];
 }
 
 - (void)setupLink {

@@ -40,14 +40,24 @@
         ZCGWindowDelegate *delegate = [[ZCGWindowDelegate alloc] init];
         
         if (handle) {
-            if (handle->on_loop_callback) {
-                self.glView.onLoopCallback = ^{
-                    handle->on_loop_callback();
+            if (handle->on_render_callback) {
+                self.glView.onRenderCallback = ^{
+                    handle->on_render_callback();
                 };
             }
             if (handle->on_reshape_callback) {
                 self.glView.onReshapeCallback = ^(int width, int height){
                     handle->on_reshape_callback(width, height);
+                };
+            }
+            if (handle->on_init_callback) {
+                self.glView.onInitCallback = ^{
+                    handle->on_init_callback();
+                };
+            }
+            if (handle->on_update_callback) {
+                self.glView.onUpdateCallback = ^{
+                    handle->on_update_callback();
                 };
             }
         }
