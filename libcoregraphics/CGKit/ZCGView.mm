@@ -73,6 +73,8 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
            NSOpenGLPFADepthSize, 16,
            NSOpenGLPFADoubleBuffer,
            NSOpenGLPFAAccelerated,
+           NSOpenGLPFASamples, 16,
+           NSOpenGLPFASampleBuffers, 1,
            0
        };
     
