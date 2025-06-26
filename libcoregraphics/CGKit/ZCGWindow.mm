@@ -31,11 +31,14 @@
                                               styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable)
                                                 backing:NSBackingStoreBuffered
                                                   defer:NO];
+        
         NSString *titleStr = [NSString stringWithUTF8String:title];
         [_window setTitle:titleStr];
         
         _glView = [[ZCGView alloc] initWithFrame:frame];
         [_window setContentView:_glView];
+        
+        [_window setContentAspectRatio:NSMakeSize(width, height)];
         
         ZCGWindowDelegate *delegate = [[ZCGWindowDelegate alloc] init];
         
