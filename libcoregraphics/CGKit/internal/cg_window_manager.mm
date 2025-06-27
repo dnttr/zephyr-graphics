@@ -36,12 +36,20 @@ zcg_window_t *zcg_allocate(zcg_window_args_t *args, zcg_callback_handle *handle)
     if (globalWindow) {
         return NULL; // Only one window for now
     }
+    
+    if (handle == nullptr) {
+        return NULL;
+    }
 
     globalWindow = [[ZCGWindow alloc] initWithTitle:args->title
                                                 x:args->x
                                                 y:args->y
                                             width:args->width
                                            height:args->height
+                                           min_width:args->min_width
+                                           min_height:args->min_height
+                                          max_width:args->max_width
+                                         max_height:args->max_height
                                      callbackHandle:handle];
     
     if (!globalWindow) return NULL;

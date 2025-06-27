@@ -18,6 +18,9 @@ extern "C" {
         int x, y;
 
         int width, height;
+        
+        int min_width, min_height;
+        int max_width, max_height;
     } zcg_window_args_t;
 
     typedef struct

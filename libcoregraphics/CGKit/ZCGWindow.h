@@ -25,6 +25,10 @@
                             y:(int)y
                         width:(int)width
                        height:(int)height
+                    min_width:(int)min_width
+                    min_height:(int)min_height
+                    max_width:(int)max_width
+                    max_height:(int)max_height
                callbackHandle:(zcg_callback_handle *)handle;
 
 - (bool)isRetina;

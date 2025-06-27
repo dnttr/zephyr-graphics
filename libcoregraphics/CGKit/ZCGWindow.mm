@@ -19,6 +19,10 @@
                             y:(int)y
                         width:(int)width
                        height:(int)height
+                       min_width:(int)min_width
+                       min_height:(int)min_height
+                       max_width:(int)max_width
+                       max_height:(int)max_height
                callbackHandle:(zcg_callback_handle *)handle
 {
     self = [super init];
@@ -37,32 +41,32 @@
         
         _glView = [[ZCGView alloc] initWithFrame:frame];
         [_window setContentView:_glView];
-        
+
+        [_window setMinSize:NSMakeSize(min_width, min_height)];
+        [_window setMaxSize:NSMakeSize(max_width, max_height)];
         [_window setContentAspectRatio:NSMakeSize(width, height)];
         
         ZCGWindowDelegate *delegate = [[ZCGWindowDelegate alloc] init];
         
-        if (handle) {
-            if (handle->on_render_callback) {
-                self.glView.onRenderCallback = ^{
-                    handle->on_render_callback();
-                };
-            }
-            if (handle->on_reshape_callback) {
-                self.glView.onReshapeCallback = ^(int width, int height){
-                    handle->on_reshape_callback(width, height);
-                };
-            }
-            if (handle->on_init_callback) {
-                self.glView.onInitCallback = ^{
-                    handle->on_init_callback();
-                };
-            }
-            if (handle->on_update_callback) {
-                self.glView.onUpdateCallback = ^{
-                    handle->on_update_callback();
-                };
-            }
+        if (handle->on_render_callback) {
+            self.glView.onRenderCallback = ^{
+                handle->on_render_callback();
+            };
+        }
+        if (handle->on_reshape_callback) {
+            self.glView.onReshapeCallback = ^(int width, int height){
+                handle->on_reshape_callback(width, height);
+            };
+        }
+        if (handle->on_init_callback) {
+            self.glView.onInitCallback = ^{
+                handle->on_init_callback();
+            };
+        }
+        if (handle->on_update_callback) {
+            self.glView.onUpdateCallback = ^{
+                handle->on_update_callback();
+            };
         }
         
         [[NSNotificationCenter defaultCenter] addObserverForName:NSApplicationWillTerminateNotification
