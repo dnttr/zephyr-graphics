@@ -1,5 +1,5 @@
 //
-//  ZCGView.m
+//  ZCGView.mm
 //  libcoregraphics
 //
 //  Created by Damian Netter on 15/05/2025.
@@ -26,6 +26,8 @@
     BOOL isDrawing;
     BOOL isInitialized;
     dispatch_semaphore_t drawSemaphore;
+    
+    NSTrackingArea *trackingArea;
 }
 
 int backingWidth = 0;
@@ -87,9 +89,65 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
         drawSemaphore = dispatch_semaphore_create(1);
         
         [self setWantsBestResolutionOpenGLSurface:YES];
+        
+        [self setupMouseTracking];
     }
     
     return self;
+}
+
+- (void)setupMouseTracking {
+    if (trackingArea) {
+        [self removeTrackingArea:trackingArea];
+    }
+    
+    trackingArea = [[NSTrackingArea alloc] initWithRect:[self bounds]
+                                                options:(NSTrackingMouseMoved |
+                                                        NSTrackingMouseEnteredAndExited |
+                                                        NSTrackingActiveInKeyWindow)
+                                                  owner:self
+                                               userInfo:nil];
+    [self addTrackingArea:trackingArea];
+}
+
+- (void)setCallbackHandle:(zcg_callback_handle *)handle {
+    _callbackHandle = handle;
+
+    if (handle) {
+        if (handle->on_mouse_move_callback) {
+            self.onMouseMoveCallback = ^(NSPoint mouseLocation) {
+                zcg_mouse_pos_t pos = {(float)mouseLocation.x, (float)mouseLocation.y};
+                handle->on_mouse_move_callback(pos);
+            };
+        }
+        
+        if (handle->on_mouse_enter_callback) {
+            self.onMouseEnterCallback = ^(NSPoint mouseLocation) {
+                zcg_mouse_pos_t pos = {(float)mouseLocation.x, (float)mouseLocation.y};
+                handle->on_mouse_enter_callback(pos);
+            };
+        }
+        
+        if (handle->on_mouse_exit_callback) {
+            self.onMouseExitCallback = ^(NSPoint mouseLocation) {
+                zcg_mouse_pos_t pos = {(float)mouseLocation.x, (float)mouseLocation.y};
+                handle->on_mouse_exit_callback(pos);
+            };
+        }
+        
+        if (handle->on_scroll_callback) {
+            self.onScrollCallback = ^(CGFloat deltaX, CGFloat deltaY, NSPoint mouseLocation) {
+                zcg_scroll_event_t event = {
+                    .delta_x = (float)deltaX,
+                    .delta_y = (float)deltaY,
+                    .mouse_x = (float)mouseLocation.x,
+                    .mouse_y = (float)mouseLocation.y,
+                    .is_precise = true
+                };
+                handle->on_scroll_callback(event);
+            };
+        }
+    }
 }
 
 - (void)prepareOpenGL {
@@ -153,10 +211,15 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
     }
 }
 
+- (void)updateTrackingAreas {
+    [super updateTrackingAreas];
+    [self setupMouseTracking];
+}
+
 - (void)viewDidMoveToWindow {
     [super viewDidMoveToWindow];
     
-        [[NSNotificationCenter defaultCenter] addObserver:self
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(boundsDidChange:)
                                                  name:NSViewBoundsDidChangeNotification
                                                object:self];
@@ -167,7 +230,6 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
         [self updateGLViewport];
     }
 }
-
 
 - (void)reshape {
     [super reshape];
@@ -272,13 +334,158 @@ static CVReturn callback(CVDisplayLinkRef displayLink,
 }
 
 - (void)mouseDown:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.callbackHandle && self.callbackHandle->on_mouse_down_callback) {
+        zcg_mouse_pos_t pos = {(float)locationInView.x, (float)locationInView.y};
+        int button = ZCG_MOUSE_BUTTON_LEFT;
+        self.callbackHandle->on_mouse_down_callback(pos, button);
+    }
+}
+
+- (void)mouseUp:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.callbackHandle && self.callbackHandle->on_mouse_up_callback) {
+        zcg_mouse_pos_t pos = {(float)locationInView.x, (float)locationInView.y};
+        int button = ZCG_MOUSE_BUTTON_LEFT;
+        self.callbackHandle->on_mouse_up_callback(pos, button);
+    }
+}
+
+- (void)rightMouseDown:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.callbackHandle && self.callbackHandle->on_mouse_down_callback) {
+        zcg_mouse_pos_t pos = {(float)locationInView.x, (float)locationInView.y};
+        int button = ZCG_MOUSE_BUTTON_RIGHT;
+        self.callbackHandle->on_mouse_down_callback(pos, button);
+    }
+}
+
+- (void)rightMouseUp:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.callbackHandle && self.callbackHandle->on_mouse_up_callback) {
+        zcg_mouse_pos_t pos = {(float)locationInView.x, (float)locationInView.y};
+        int button = ZCG_MOUSE_BUTTON_RIGHT;
+        self.callbackHandle->on_mouse_up_callback(pos, button);
+    }
+}
+
+- (void)otherMouseDown:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.callbackHandle && self.callbackHandle->on_mouse_down_callback) {
+        zcg_mouse_pos_t pos = {(float)locationInView.x, (float)locationInView.y};
+        int button = ZCG_MOUSE_BUTTON_MIDDLE;
+        self.callbackHandle->on_mouse_down_callback(pos, button);
+    }
+}
+
+- (void)otherMouseUp:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.callbackHandle && self.callbackHandle->on_mouse_up_callback) {
+        zcg_mouse_pos_t pos = {(float)locationInView.x, (float)locationInView.y};
+        int button = ZCG_MOUSE_BUTTON_MIDDLE;
+        self.callbackHandle->on_mouse_up_callback(pos, button);
+    }
+}
+
+- (void)mouseMoved:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.onMouseMoveCallback) {
+        self.onMouseMoveCallback(locationInView);
+    }
+}
+
+- (void)mouseDragged:(NSEvent *)event {
+    [self mouseMoved:event];
+}
+
+- (void)rightMouseDragged:(NSEvent *)event {
+    [self mouseMoved:event];
+}
+
+- (void)otherMouseDragged:(NSEvent *)event {
+    [self mouseMoved:event];
+}
+
+- (void)mouseEntered:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.onMouseEnterCallback) {
+        self.onMouseEnterCallback(locationInView);
+    }
+}
+
+- (void)mouseExited:(NSEvent *)event {
+    NSPoint locationInView = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    if (self.onMouseExitCallback) {
+        self.onMouseExitCallback(locationInView);
+    }
+}
+
+- (void)scrollWheel:(NSEvent *)event {
+    CGFloat deltaX = [event scrollingDeltaX];
+    CGFloat deltaY = [event scrollingDeltaY];
+    NSPoint mouseLocation = [self convertPoint:[event locationInWindow] fromView:nil];
+    
+    bool isPrecise = [event hasPreciseScrollingDeltas];
+    
+    if (!isPrecise) {
+        deltaX *= 10.0f;
+        deltaY *= 10.0f;
+    }
+    
+    if (self.callbackHandle && self.callbackHandle->on_scroll_callback) {
+        zcg_scroll_event_t scrollEvent = {
+            .delta_x = (float)deltaX,
+            .delta_y = (float)deltaY,
+            .mouse_x = (float)mouseLocation.x,
+            .mouse_y = (float)mouseLocation.y,
+            .is_precise = isPrecise
+        };
+        self.callbackHandle->on_scroll_callback(scrollEvent);
+    }
+    
+    if (self.onScrollCallback) {
+        self.onScrollCallback(deltaX, deltaY, mouseLocation);
+    }
 }
 
 - (void)keyDown:(NSEvent *)event {
 }
 
+- (void)getCurrentMousePosition:(float *)x y:(float *)y {
+    NSPoint mouseLocation = [self getCurrentMouseLocation];
+    if (x) *x = (float)mouseLocation.x;
+    if (y) *y = (float)mouseLocation.y;
+}
+
+- (NSPoint)getCurrentMouseLocation {
+    NSPoint windowPoint = [self.window mouseLocationOutsideOfEventStream];
+    return [self convertPoint:windowPoint fromView:nil];
+}
+
+- (BOOL)isMouseCurrentlyInView {
+    return [self isMouseInView];
+}
+
+- (BOOL)isMouseInView {
+    NSPoint mouseLocation = [self getCurrentMouseLocation];
+    return NSPointInRect(mouseLocation, [self bounds]);
+}
+
 - (void)dealloc {
     NSLog(@"ZCGView dealloc");
+    
+    if (trackingArea) {
+        [self removeTrackingArea:trackingArea];
+    }
     
     if (displayLink) {
         CVDisplayLinkStop(displayLink);

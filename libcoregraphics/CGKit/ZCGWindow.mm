@@ -43,7 +43,7 @@
         [_window setContentView:_glView];
 
         [_window setMinSize:NSMakeSize(min_width, min_height)];
-        [_window setMaxSize:NSMakeSize(max_width, max_height)];
+       // [_window setMaxSize:NSMakeSize(max_width, max_height)];
         [_window setContentAspectRatio:NSMakeSize(width, height)];
         
         ZCGWindowDelegate *delegate = [[ZCGWindowDelegate alloc] init];
@@ -68,14 +68,16 @@
                 handle->on_update_callback();
             };
         }
+
+        [self.glView setCallbackHandle:handle]; //TODO: move it to this class, its only temporary in there.
         
         [[NSNotificationCenter defaultCenter] addObserverForName:NSApplicationWillTerminateNotification
                                                           object:nil
                                                            queue:nil
                                                       usingBlock:^(NSNotification * _Nonnull note) {
-            
-            handle->on_exit_callback();
-
+            if (handle->on_exit_callback) {
+                handle->on_exit_callback();
+            }
         }];
         
         _window.delegate = delegate;
